@@ -60,14 +60,15 @@
             <p class="text-gray-600 leading-relaxed mb-4">
                <%= post.content %>   </p>
             
+               <small> <%= post.likes.length %> 4 like </small>
             <div class="flex items-center space-x-4 text-sm"> 
-                <a href="" class="flex items-center text-gray-600 hover:text-blue-500 transition duration-200">
+                <a href="/like/<%= post._id %>" class="flex items-center text-gray-600 hover:text-blue-500 transition duration-200">
                     <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                     </svg>
-                    Like
+                   <%= post.likes.indexOf(user._id) ===-1 ? "unlike" : "like" %>
                 </a>
-                <a href="" class="flex items-center text-gray-600 hover:text-blue-500 transition duration-200">
+                <a href="/edit/<%= post._id %>" class="flex items-center text-gray-600 hover:text-blue-500 transition duration-200">
                     <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                     </svg>
