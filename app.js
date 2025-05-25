@@ -106,7 +106,7 @@ app.post("/login", async (req, res) => {
         res.cookie("token", token);
 
         // Send success response
-        return res.status(200).send("Login successful");
+        return res.status(200).redirect("/profile");
 
     } catch (err) {
         // Handle unexpected errors
@@ -117,19 +117,46 @@ app.post("/login", async (req, res) => {
 
 // =============== PROTECTED PROFILE ROUTE =====================
 
-app.get("/profile", isLoggedIn, (req, res) => {
-    // Only reaches here if `isLoggedIn` middleware passes
-    if (!req.user) {
-        // If no user found in request, redirect to login
-        return res.redirect('/login');
+app.get("/profile", isLoggedIn, async (req, res) => {
+    try {
+        let user = await userModel.findOne({ email: req.user.email }).populate("posts");
+    //tells Mongoose to automatically replace the posts field in the user document with the actual post documents it references.
+       
+        
+        // Pass the user object to the template
+        res.render("profile", { user: user });
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        res.redirect("/login");
     }
-
-    console.log("Logged in user:", req.user); // Debug info
-
-    // Render the profile page (views/profile.ejs)
-    res.render("profile");
 });
 
+
+app.post("/post", isLoggedIn, async (req, res) => {
+    try {
+        let user = await userModel.findOne({ email: req.user.email });
+        console.log("Logged in user:", user); // Debug info
+        
+        let {content} = req.body ; 
+        let post = await postModel.create({
+            user: user._id,
+            content: content 
+        });
+
+        user.posts.push(post._id);
+        await user.save();  
+   
+         res.redirect("/profile");
+        // Only send one response - either redirect or render
+        // res.render("profile", { user: user });
+        // Remove this line: res.redirect("/profile");
+        // Pass the user object to the template
+       
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        res.redirect("/login");
+    }
+});
 // =============== LOGOUT ROUTE ================================
 
 app.get("/logout", (req, res) => {

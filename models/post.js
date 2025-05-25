@@ -12,7 +12,7 @@ const postSchema = mongoose.Schema({
         type:Date ,
         default: Date.now()
     },
-    contend : String ,
+    content : String ,
     likes : [
         {
             type: mongoose.Schema.Types.ObjectId,
